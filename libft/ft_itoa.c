@@ -17,10 +17,10 @@ static int	int_len(int n)
 	int	count;
 
 	count = 0;
-	if (n < 0)
-		count++;
-	if (n >= 0 && n <= 9)
+	if (!n)
 		return (1);
+	if (n < 0)
+		count++;	
 	while (n != 0)
 	{
 		count++;

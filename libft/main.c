@@ -4,25 +4,21 @@
 #include <ctype.h>
 #include "libft.h"
 
-static char	f(unsigned int i, char c)
-{
-	return (i % 2) ? (char)toupper((unsigned char)c) : c;
-}
 
 int	main(void)
 {
 	char	*r;
 
-	r = ft_strampi("abcdef", f);
-	printf("basic : %s (expected aBcDeF)\n", r);
+	r = ft_itoa(101);
+	printf("%s\n", r);
 	free(r);
 
-	r = ft_strampi("", f);
-	printf("empty : \"%s\" (expected \"\")\n", r ? r : "NULL");
+	r = ft_itoa(2147483648);
+	printf("%s\n", r);
 	free(r);
 
-	r = ft_strampi("a", f);
-	printf("single: %s (expected a)\n", r);
+	r = ft_itoa(0);
+	printf("%s\n", r);
 	free(r);
 
 
