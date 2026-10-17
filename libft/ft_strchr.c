@@ -14,10 +14,12 @@ char	*ft_strchr(const char *s, int c)
 {
 	char	*ptr;
 
+	if (!s)
+		return (0);
 	ptr = (char *)s;
-	while (*ptr && *ptr != c)
+	while (*ptr && *ptr != (unsigned char)c)
 		ptr++;
-	if (*ptr == c)
+	if (*ptr == (unsigned char)c)
 		return (ptr);
 	return (0);
 }

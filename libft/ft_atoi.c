@@ -29,8 +29,8 @@ int	ft_atoi(const char *c)
 	}
 	while (*c >= '0' && *c <= '9')
 	{
-		n = n * 10 + (*c + '0');
-		if (n > 2147483647)
+		n = n * 10 + (*c - '0');
+		if (n > 2147483647 && s == 1)
 			return (-1);
 		c++;
 	}

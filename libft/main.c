@@ -1,12 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "libft.h"
 
-
-int	main(void)
-{
+	/*
 	char	*r;
 
 	r = ft_itoa(101);
@@ -20,9 +15,56 @@ int	main(void)
 	r = ft_itoa(0);
 	printf("%s\n", r);
 	free(r);
+	*/
+	/*
+	ft_putnbr_fd(101, 1);
+	ft_putendl_fd(" ", 1);
+	ft_putnbr_fd(-214783648, 1);
+	ft_putendl_fd(" ", 1);
+	ft_putnbr_fd(0, 1);
+	ft_putendl_fd(" ", 1);
+	ft_putnbr_fd(-10, 1);
+	ft_putendl_fd(" ", 1);
+	*/
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "libft.h"
 
-	return 0;
+static void	test(char *str)
+{
+	int	original;
+	int	custom;
+
+	original = atoi(str);
+	custom = ft_atoi(str);
+	printf("Input: \"%s\"\n", str);
+	printf("atoi: %d | ft_atoi: %d\n", original, custom);
+	printf("%s\n\n", original == custom ? "OK" : "FAIL");
+}
+
+int	main(void)
+{
+	test("0");
+	test("42");
+	test("-42");
+	test("+42");
+	test("  42");
+	test("\t\n-42");
+	test("00042");
+	test("-00042");
+	test("42abc");
+	test("abc42");
+	test("42 56");
+	test("+");
+	test("-");
+	test("+-42");
+	test("--42");
+	test("");
+	test(" ");
+	test("2147483647");
+	test("-2147483648");
+	return (0);
 }
 	/* printf("alpha : [%d]\n", ft_isalpha(av[1][0]));
 	printf("digit : [%d]\n", ft_isdigit(av[1][0]));

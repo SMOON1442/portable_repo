@@ -15,13 +15,15 @@ char	*ft_strrchr(const char *s, int c)
 	int		i;
 	char	*ptr;
 
+	if (!s)
+		return (0);
 	i = 0;
 	while (s[i])
 		i++;
 	ptr = ((char *)s + i);
-	while (ptr != s && *ptr != c)
+	while (ptr != s && *ptr != (unsigned char)c)
 		ptr--;
-	if (*ptr == c)
+	if (*ptr == (unsigned char)c)
 		return (ptr);
 	return (0);
 }

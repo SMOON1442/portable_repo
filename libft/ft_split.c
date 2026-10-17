@@ -71,6 +71,8 @@ char	**ft_split(char const *s, char c)
 {
 	char	**arr;
 
+	if (!s)
+		return (NULL);
 	arr = malloc((arr_len(s, c) + 1) * sizeof(char *));
 	if (!arr)
 		return (NULL);
