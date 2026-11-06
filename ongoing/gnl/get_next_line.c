@@ -1,119 +1,97 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: moboulah <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/19 21:45:39 by moboulah          #+#    #+#             */
-/*   Updated: 2026/10/19 21:45:43 by moboulah         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
-#include <stdio.h>
 
-static char	*final_word(char *buf)
+char	*final_word(char *buf)
 {
-	char	*line;
-	size_t	i;
+	int		i;
+	char	*final;
 
 	i = 0;
-	while (buf[i] && buf[i] != '\n')
+	while (buf[i] != '\n' && buf[i])
 		i++;
-	if (buf[i] == '\n')
-		i++;
-	line = malloc(i + 1);
-	if (!line)
+	final = malloc(i + 2);
+	if (!final)
 		return (NULL);
-	line[i] = '\0';
-	while (i--)
-		line[i] = buf[i];
-	return (line);
+	i = 0;
+	while (buf[i] != '\n' && buf[i])
+	{
+		final[i] = buf[i];
+		i++;
+	}
+	final[i] = '\n';
+	final[i + 1] = '\0';
+	return (final);
 }
 
-static int	split_line(char *src, char *nl, char **rest, t_list **lst)
+static char	*append_str(char *str, char *buf)
 {
-	char	*tmp;
+	char	*str1;
 
-	tmp = final_word(src);
-	if (!tmp || !ft_lstadd_back(lst, tmp))
-		return (free(tmp), 0);
-	tmp = ft_strdup(nl + 1);
-	if (!tmp)
-		return (0);
-	free(*rest);
-	*rest = tmp;
-	return (1);
+	str1 = ft_strjoin(str, buf);
+	free(str);
+	return (str1);
 }
 
-static int	get_rest(char **rest, t_list **lst)
+static char	*handle_rest(char **rest, char **str)
 {
-	char	*newline;
+	char	*rest1;
 
 	if (!*rest)
-		return (1);
-	newline = ft_strchr(*rest, '\n');
-	if (newline)
+		return (NULL);
+	if (ft_strchr(*rest, '\n'))
 	{
-		if (!split_line(*rest, newline, rest, lst))
-			return (0);
-		return (2);
+		rest1 = final_word(*rest);
+		*str = append_str(*str, rest1);
+		free(rest1);
+		rest1 = ft_strdup(ft_strchr(*rest, '\n') + 1);
+		free(*rest);
+		*rest = rest1;
+		return (*str);
 	}
-	if (!ft_lstadd_back(lst, *rest))
-		return (0);
+	*str = append_str(*str, *rest);
+	free(*rest);
 	*rest = NULL;
-	return (1);
+	return (NULL);
 }
 
-static int	read_to_list(int fd, char **rest, t_list **lst)
+static char	*fill_str(int fd, char *str, char **rest)
 {
 	char	buf[BUFFER_SIZE + 1];
-	char	*newline;
-	char	*tmp;
-	ssize_t	n;
+	char	*buf1;
+	int		n;
 
 	n = 1;
 	while (n > 0)
 	{
 		n = read(fd, buf, BUFFER_SIZE);
 		if (n < 0)
-			return (0);
+			return (free(*rest), *rest = NULL, free(str), NULL);
 		buf[n] = '\0';
-		newline = ft_strchr(buf, '\n');
-		if (newline)
-			return (split_line(buf, newline, rest, lst));
-		if (n > 0)
+		if (ft_strchr(buf, '\n'))
 		{
-			tmp = ft_strdup(buf);
-			if (!tmp || !ft_lstadd_back(lst, tmp))
-				return (free(tmp), 0);
+			*rest = ft_strdup(ft_strchr(buf, '\n') + 1);
+			buf1 = final_word(buf);
+			str = append_str(str, buf1);
+			free(buf1);
+			return (str);
 		}
+		str = append_str(str, buf);
 	}
-	return (1);
+	if (!*str)
+		return (free(str), NULL);
+	return (str);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*rest[1024];
-	t_list		*lst;
+	static char	*rest;
 	char		*str;
-	int			status;
+	char		*str1;
 
-	if (fd < 0 || fd >= 1024 || BUFFER_SIZE <= 0)
-		return (NULL);
-	lst = NULL;
-	status = get_rest(&rest[fd], &lst);
-	if (!status)
-		return (ft_lstclear(lst), NULL);
-	if (status != 2 && !read_to_list(fd, &rest[fd], &lst))
-		return (ft_lstclear(lst), NULL);
-	if (!lst)
-		return (NULL);
-	str = ft_lstjoin(lst);
-	ft_lstclear(lst);
-	if (str && !*str)
-		return (free(str), NULL);
-	printf("%s", str);
-	return (str);
+	if (fd < 0 || read(fd, NULL, 0) < 0)
+		return (free(rest), rest = NULL, NULL);
+	str = ft_strdup("");
+	str1 = handle_rest(&rest, &str);
+	if (str1)
+		return (str1);
+	return (fill_str(fd, str, &rest));
 }

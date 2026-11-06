@@ -1,5 +1,28 @@
 #include "get_next_line.h"
 
+char	*ft_strdup(const char *s)
+{
+	char	*dup;
+	int		i;
+
+	if (!s)
+		return (NULL);
+	i = 0;
+	while (s[i])
+		i++;
+	dup = malloc(i + 1);
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (s[i])
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
+}
+
 char    *ft_strchr(const char *s, int c)
 {
     if (!s)
@@ -11,6 +34,39 @@ char    *ft_strchr(const char *s, int c)
     return (NULL);
 }
 
+size_t	ft_strlen(char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+size_t	ft_strlcat(char *dest, const char *src, size_t size)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	while (i < size && dest[i])
+		i++;
+	j = 0;
+	while (src[j])
+		j++;
+	if (i == size)
+		return (i + j);
+	j = 0;
+	while (src[j])
+	{
+		dest[i + j] = src[j];
+		j++;
+	}
+	dest [i + j] = '\0';
+	return (i + j);
+}
+/*
 char    *ft_strdup(const char *s)
 {
     char    *dup;
@@ -30,7 +86,7 @@ char    *ft_strdup(const char *s)
     dup[i] = '\0';
     return (dup);
 }
-
+*/
 char    *ft_strjoin(char const *s1, char const *s2)
 {
     char    *str;
@@ -53,59 +109,5 @@ char    *ft_strjoin(char const *s1, char const *s2)
         str[i + j] = s2[j];
     while (i--)
         str[i] = s1[i];
-    return (str);
-}
-
-int    ft_lstadd_back(t_list **lst, char *content)
-{
-    t_list    *new;
-    t_list    *tmp;
-
-    if (!lst || !content)
-        return (0);
-    new = malloc(sizeof(t_list));
-    if (!new)
-        return (0);
-    new->content = content;
-    new->next = NULL;
-    if (!*lst)
-        return (*lst = new, 1);
-    tmp = *lst;
-    while (tmp->next)
-        tmp = tmp->next;
-    tmp->next = new;
-    return (1);
-}
-
-void    ft_lstclear(t_list *lst)
-{
-    t_list    *tmp;
-
-    while (lst)
-    {
-        tmp = lst->next;
-        free(lst->content);
-        free(lst);
-        lst = tmp;
-    }
-}
-
-char    *ft_lstjoin(t_list *lst)
-{
-    char    *str;
-    char    *tmp;
-
-    str = ft_strdup("");
-    if (!str)
-        return (NULL);
-    while (lst)
-    {
-        tmp = ft_strjoin(str, lst->content);
-        if (!tmp)
-            return (free(str), NULL);
-        free(str);
-        str = tmp;
-        lst = lst->next;
-    }
     return (str);
 }
